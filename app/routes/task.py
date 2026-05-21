@@ -2,7 +2,7 @@
 from flask import Blueprint, request, Response
 from queue import Queue
 from app.core.task_thread import async_task_wrapper
-from app.scripts import *
+from app.scripts import InitOS
 
 task_bp = Blueprint("task", __name__)
 task_logs = {}
