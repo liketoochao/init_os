@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加主机 - 服务器批量配置工具 V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        /* 科技感动态背景（和登录页完全一样） */
+        body {
+            background: linear-gradient(135deg, #0f1a2c 0%, #1f3a60 50%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 浮动光点装饰 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    radial-gradient(circle at 20% 30%, rgba(70, 130, 180, 0.15) 0%, transparent 25%),
+                    radial-gradient(circle at 80% 70%, rgba(30, 144, 255, 0.1) 0%, transparent 25%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 容器风格和登录页一致 */
+        .container {
+            background: rgba(255, 255, 255, 0.97);
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* LOGO区域 */
+        .logo-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            font-size: 32px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .system-version {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background: #007bff;
+            border-radius: 3px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .form-label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+        }
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 按钮和登录页一样 */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.25);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 底部 */
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            z-index: 1;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- LOGO 与标题 -->
+    <div class="logo-box">
+        <div class="logo-icon">⚙</div>
+        <h2 class="page-title">添加远程主机</h2>
+        <div class="system-version">服务器批量配置工具 V3.0.0</div>
+    </div>
+
+    <!-- 表单 -->
+    <div class="form-group">
+        <label class="form-label">主机名称</label>
+        <input id="name" class="form-input" placeholder="例如：测试服务器、生产主机">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">主机IP</label>
+        <input id="ip" class="form-input" placeholder="例如：192.168.1.100">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">SSH 端口</label>
+        <input id="port" class="form-input" value="22" placeholder="默认22">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">SSH 账号</label>
+        <input id="username" class="form-input" placeholder="例如：root">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">SSH 密码</label>
+        <input id="password" class="form-input" type="password" placeholder="请输入主机密码">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">备注信息</label>
+        <textarea id="remark" class="form-input" placeholder="选填：用途、归属、位置等"></textarea>
+    </div>
+
+    <button class="submit-btn" onclick="addHost()" id="saveBtn">保存主机信息</button>
+</div>
+
+<div class="login-footer">
+    © 2025 服务器批量配置工具 | 安全 · 高效 · 稳定
+</div>
+
+<script>
+    const saveBtn = document.getElementById('saveBtn');
+
+    function addHost() {
+        let data = {
+            name: document.getElementById('name').value.trim(),
+            ip: document.getElementById('ip').value.trim(),
+            port: document.getElementById('port').value.trim(),
+            username: document.getElementById('username').value.trim(),
+            password: document.getElementById('password').value.trim(),
+            remark: document.getElementById('remark').value.trim()
+        };
+
+        if (!data.name || !data.ip || !data.username || !data.password) {
+            alert('请填写完整信息！');
+            return;
+        }
+
+        // 按钮禁用防重复提交
+        saveBtn.disabled = true;
+        saveBtn.textContent = '保存中...';
+
+        fetch('/host/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+          .then(d => {
+            alert(d.msg);
+            if (d.code === 200) {
+                location.href = '/host/list';
+            } else {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '保存主机信息';
+            }
+        }).catch(() => {
+            alert('请求失败');
+            saveBtn.disabled = false;
+            saveBtn.textContent = '保存主机信息';
+        });
+    }
+</script>
+
+</body>
+</html>

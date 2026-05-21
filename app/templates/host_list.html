@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的主机 - 服务器批量配置工具 V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        /* 科技背景（和登录页完全一致） */
+        body {
+            background: linear-gradient(135deg, #0f1a2c 0%, #1f3a60 50%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+            position: relative;
+            overflow: auto;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(70,130,180,0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(30,144,255,0.1) 0%, transparent 25%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 主容器统一风格 */
+        .container {
+            background: rgba(255, 255, 255, 0.97);
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 520px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        /* LOGO 区域 */
+        .logo-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-icon {
+            width: 70px; height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            font-size: 32px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .system-version {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background: #007bff;
+            border-radius: 3px;
+        }
+
+        /* 主机列表项 */
+        .host-item {
+            padding: 18px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #fafbfc;
+        }
+        .host-item h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+        .host-item p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* 空数据提示 */
+        .empty {
+            text-align: center;
+            padding: 30px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* 按钮 */
+        .add-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,123,255,0.2);
+        }
+
+        /* 底部 */
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin-top: 10px;
+            z-index: 1;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="logo-box">
+        <div class="logo-icon">⚙</div>
+        <h2 class="page-title">我的主机列表</h2>
+        <div class="system-version">服务器批量配置工具 V3.0.0</div>
+    </div>
+
+    <div id="hostList"></div>
+
+    <a href="/host/add" class="add-btn">➕ 添加新主机</a>
+</div>
+
+<div class="footer">
+    © 2025 服务器批量配置工具 | 安全 · 高效 · 稳定
+</div>
+
+<script>
+    fetch("/host/list")
+        .then(res => res.json())
+        .then(d => {
+            let list = document.getElementById("hostList");
+            if (!d.data || d.data.length === 0) {
+                list.innerHTML = `<div class="empty">暂无主机，请点击下方添加主机</div>`;
+                return;
+            }
+            let html = "";
+            d.data.forEach(item => {
+                html += `
+                <div class="host-item">
+                    <h3>${item.name}</h3>
+                    <p>🖥️ IP：${item.ip}:${item.port}</p>
+                    <p>👤 账号：${item.username}</p>
+                    <p>📝 备注：${item.remark || '无'}</p>
+                </div>`;
+            });
+            list.innerHTML = html;
+        });
+</script>
+
+</body>
+</html>

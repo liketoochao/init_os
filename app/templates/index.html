@@ -1,84 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CentOS 服务器批量配置向导 V3｜运维专用</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta charset="UTF-8">
+    <title>服务器批量配置工具</title>
+    <style>
+        body{font-family: "Microsoft YaHei";margin: 30px;background: #f5f7fa;}
+        .box{max-width:600px;background:white;padding:25px;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 10px #00000010;}
+        input{width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:5px;}
+        button{background:#007bff;color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;}
+        .item{padding:10px;border-bottom:1px solid #eee;}
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2>⚙️ CentOS 服务器批量配置向导 <span style="font-size:14px;color:#86909C">Docker-Compose 集成版</span></h2>
-    <div class="card step-bar">
-        <div class="step active" id="step1-tag">① 系统初始化</div>
-        <div class="step" id="step2-tag">② 运行环境部署</div>
-        <div class="step" id="step3-tag">③ 执行确认</div>
-    </div>
-    <div class="card">
-        <form id="mainForm">
-            <div class="step-content active" id="step1">
-                <h3>🔧 系统基础初始化配置</h3>
-                <div class="row">
-                    <div><label>主机后缀（自动生成 node_xxx）</label><input value="01" name="host_suffix"></div>
-                    <div><label>SSH 连接端口</label><input type="number" value="22" name="port"></div>
-                    <div><label>服务器用户名</label><input value="root" name="username"></div>
-                    <div><label>服务器密码</label><input type="password" name="password"></div>
-                </div>
-                <label>🖥️ 服务器IP列表（一行一个）</label>
-                <textarea name="hosts" rows="3" placeholder="请输入服务器IP，一行一个">192.168.1.10</textarea>
-                <h4>⚙️ 系统优化选项</h4>
-                <div class="row">
-                    <div class="item"><input checked type="checkbox" name="yum_repo"><label>更换国内YUM源</label></div>
-                    <div class="item"><input checked type="checkbox" name="ntp"><label>时间同步</label><input value="ntp.aliyun.com" name="ntp_server"></div>
-                    <div class="item"><input checked type="checkbox" name="firewall"><label>关闭防火墙&SELinux</label></div>
-                    <div class="item"><input checked type="checkbox" name="ssh_optimize"><label>SSH连接优化</label></div>
-                    <div class="item"><input checked type="checkbox" name="stop_services"><label>关闭无用自启服务</label></div>
-                    <div class="item"><input checked type="checkbox" name="swap"><label>关闭Swap交换分区</label></div>
-                    <div class="item"><input checked type="checkbox" name="numa_thp"><label>关闭NUMA/THP</label></div>
-                    <div class="item"><input checked type="checkbox" name="limits"><label>文件句柄优化</label></div>
-                    <div class="item"><input checked type="checkbox" name="history"><label>命令时间戳记录</label></div>
-                    <div class="item"><input checked type="checkbox" name="kernel"><label>内核参数调优</label></div>
-                    <div class="item"><input type="checkbox" name="ipv6"><label>禁用IPv6</label></div>
-                    <div class="item"><input checked type="checkbox" name="tools"><label>安装基础工具包</label><input value="lsof vim wget curl tar git" name="tools_list"></div>
-                    <div class="item"><input type="checkbox" name="container"><label>容器网络优化</label></div>
-                </div>
-                <div style="text-align:right;margin-top:24px">
-                    <button type="button" class="btn btn-blue" onclick="nextStep()">下一步 →</button>
-                </div>
-            </div>
-            <div class="step-content" id="step2">
-                <h3>🖥️ 运行环境部署（Java / Docker）</h3>
-                <div class="row">
-                    <div class="item"><input checked type="checkbox" name="java"><label>安装 JAVA 1.8 环境</label></div>
-                    <div><label>Java安装包版本</label><input value="java-1.8.0-openjdk-devel" name="java_version"></div>
-                    <div class="item"><input type="checkbox" name="docker"><label>安装 Docker + Compose</label></div>
-                </div>
-                <div style="color:#86909C;margin-top:30px;padding:12px;background:#F2F3F5;border-radius:8px">
-                    <p>💡 后续可扩展：MySQL8、Redis、Nginx、中间件一键部署｜适配CentOS9｜全部国内源无外网依赖</p>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-top:40px">
-                    <button type="button" class="btn btn-gray" onclick="prevStep()">← 上一步</button>
-                    <button type="button" class="btn btn-blue" onclick="nextStep()">下一步 →</button>
-                </div>
-            </div>
-            <div class="step-content" id="step3">
-                <h3>✅ 执行任务确认清单</h3>
-                <div style="padding:16px;background:#F2F3F5;border-radius:8px;line-height:2.2">
-                    <p>① 系统初始化：内核调优、安全加固、源替换、资源优化</p>
-                    <p>② 环境部署：Java运行环境 / Docker+Compose 容器环境</p>
-                    <p>③ 主机命名规则：自动生成 node_+编号 主机名</p>
-                    <p style="color:#F53F3F;font-weight:500">⚠️ 请确认服务器IP、账号密码无误后再执行！</p>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-top:40px">
-                    <button type="button" class="btn btn-gray" onclick="prevStep()">← 上一步</button>
-                    <button type="button" class="btn btn-blue" onclick="startRun()">▶ 开始批量执行</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="card"><div class="progress"><div class="bar" id="bar"></div></div></div>
-    <div class="log-grid" id="logs"></div>
+
+<h2>🚀 服务器批量配置工具 - 首页</h2>
+
+<div class="box">
+    <h3>➕ 添加主机</h3>
+    <input id="name" placeholder="主机名称"><br>
+    <input id="ip" placeholder="主机IP"><br>
+    <input id="port" value="22" placeholder="端口"><br>
+    <input id="username" placeholder="账号"><br>
+    <input id="password" placeholder="密码" type="password"><br>
+    <button onclick="addHost()">保存主机</button>
 </div>
-<script src="/static/js/index.js"></script>
+
+<div class="box">
+    <h3>📋 我的主机列表</h3>
+    <div id="hostList"></div>
+</div>
+
+<script>
+    // 添加主机
+    function addHost() {
+        let data = {
+            name: document.getElementById("name").value,
+            ip: document.getElementById("ip").value,
+            port: document.getElementById("port").value,
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        };
+
+        fetch("/host/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(res => res.json()).then(d => {
+            alert(d.msg);
+            if (d.code === 200) {
+                loadHostList();
+            }
+        });
+    }
+
+    // 加载主机列表
+    function loadHostList() {
+        fetch("/host/my_list")
+            .then(res => res.json())
+            .then(d => {
+                let html = "";
+                d.data.forEach(h => {
+                    html += `
+                    <div class="item">
+                        <strong>${h.name}</strong> | ${h.ip}:${h.port}<br>
+                        账号：${h.username}
+                    </div>`;
+                });
+                document.getElementById("hostList").innerHTML = html;
+            });
+    }
+
+    // 页面加载时自动显示主机
+    window.onload = loadHostList;
+</script>
+
 </body>
 </html>
