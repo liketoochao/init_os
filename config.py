@@ -10,7 +10,7 @@ DEBUG = True
 
 # 登录账号密码（统一管理）
 USERNAME = "admin"
-PASSWORD = "admin"
+PASSWORD = "admin123"
 
 # 路径配置
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
