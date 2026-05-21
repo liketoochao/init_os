@@ -57,14 +57,13 @@ def add_host():
 
 
 # 2. 获取当前用户的主机列表
-@host_bp.route("/list", methods=["GET"])
-def host_list():
+@host_bp.route("/list", methods=["GET"])  # 改成 list 不要用 my_list
+def list_host():
     if "user" not in session:
         return jsonify({"code": 403, "msg": "请先登录"}), 403
 
     with open(HOST_FILE, "r", encoding="utf-8") as f:
         hosts = json.load(f)
 
-    # 只返回自己添加的主机
-    user_hosts = [h for h in hosts if h.get("create_user") == session["user"]]
-    return jsonify({"code": 200, "data": user_hosts})
+    my_hosts = [h for h in hosts if h.get("create_user") == session["user"]]
+    return jsonify({"code": 200, "data": my_hosts})
